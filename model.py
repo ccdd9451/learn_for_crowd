@@ -45,17 +45,17 @@ def dropout(hidden1):
 
 def analysis(var, ref):
     with tf.name_scope("test_grades"):
+        R = tf.sqrt(tf.reduce_mean(tf.square(var - ref)))
+        Rs = tf.summary.scalar('R', R)
+    with tf.name_scope("test_grades"):
         mean = tf.reduce_mean(var)
         refmean = tf.reduce_mean(ref)
         stddev = tf.sqrt(tf.reduce_mean(tf.square(ref - refmean)))
         refstddev = tf.sqrt(tf.reduce_mean(tf.square(var - refmean)))
-        A = refstddev / refmean
+        A = R / refmean
         Z = refstddev / stddev
         As = tf.summary.scalar('A', A)
         Zs = tf.summary.scalar('Z', Z)
-    with tf.name_scope("test_grades"):
-        R = tf.sqrt(tf.reduce_mean(tf.square(var - ref)))
-        Rs = tf.summary.scalar('R', R)
     return R, (R,A,Z), tf.summary.merge([Rs, As, Zs])
 
 
