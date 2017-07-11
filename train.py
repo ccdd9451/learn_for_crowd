@@ -51,13 +51,14 @@ class Train(object):
 
     def _analysiser(self, sess):
         x, y_ = self.sample(test=True)
-        (R,A,Z), g, sum = sess.run([self.graph.sum, self.graph.g, self.graph.analysis],
+        (R,A,Z,logZ), g, sum = sess.run([self.graph.sum, self.graph.g, self.graph.analysis],
                         feed_dict=self.graph.feed_dict(x, y_, True))
         dump(Path(params.outp_dir)/"RAZ.txt",
              {
                  "R": R,
                  "A": A,
                  "Z": Z,
+                 "logZ": logZ,
                  "global_steps": g
              })
         return R,g, sum

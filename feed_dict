@@ -6,7 +6,7 @@ feed_dict:
   data_dir: data.file
   keep_prob: 0.8
   learning_rate: 0.001
-  node_list: [50, b]
+  node_list: [50, d]
   noise_amp: 1
   test_partial: 0.8
   train_steps: 20000

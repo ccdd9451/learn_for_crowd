@@ -48,15 +48,16 @@ def analysis(var, ref):
         R = tf.sqrt(tf.reduce_mean(tf.square(var - ref)))
         Rs = tf.summary.scalar('R', R)
     with tf.name_scope("test_grades"):
-        mean = tf.reduce_mean(var)
         refmean = tf.reduce_mean(ref)
         stddev = tf.sqrt(tf.reduce_mean(tf.square(ref - refmean)))
         refstddev = tf.sqrt(tf.reduce_mean(tf.square(var - refmean)))
         A = R / refmean
         Z = refstddev / stddev
+        logZ = tf.log(tf.abs(Z-1))
         As = tf.summary.scalar('A', A)
         Zs = tf.summary.scalar('Z', Z)
-    return R, (R,A,Z), tf.summary.merge([Rs, As, Zs])
+        logZs = tf.summary.scalar('Z', logZ)
+    return R, (R,A,Z,logZ), tf.summary.merge([Rs, As, Zs, logZs])
 
 
 def sampling(x, y, batch_size):

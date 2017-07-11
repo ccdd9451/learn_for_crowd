@@ -30,7 +30,7 @@ if __name__ == "__main__":
         "bias_constant": 0.1,
         "weight_stddev": 1,
         "keep_prob": 0.8,
-        "node_list": [50, "b"],
+        "node_list": [50, "d"],
         "train_steps": 20000,
         "data_dir": "data.file",
         "test_partial": 0.8,
