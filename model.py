@@ -47,7 +47,7 @@ def analysis(var, ref):
     with tf.name_scope("test_grades"):
         mean = tf.reduce_mean(var)
         refmean = tf.reduce_mean(ref)
-        stddev = tf.sqrt(tf.reduce_mean(tf.square(var - mean)))
+        stddev = tf.sqrt(tf.reduce_mean(tf.square(ref - refmean)))
         refstddev = tf.sqrt(tf.reduce_mean(tf.square(var - refmean)))
         A = refstddev / refmean
         Z = refstddev / stddev
