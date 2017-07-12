@@ -47,7 +47,6 @@ def analysis(var, ref):
     with tf.name_scope("test_grades"):
         R = tf.sqrt(tf.reduce_mean(tf.square(var - ref)))
         Rs = tf.summary.scalar('R', R)
-    with tf.name_scope("test_grades"):
         refmean = tf.reduce_mean(ref)
         stddev = tf.sqrt(tf.reduce_mean(tf.square(ref - refmean)))
         refstddev = tf.sqrt(tf.reduce_mean(tf.square(var - refmean)))

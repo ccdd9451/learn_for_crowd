@@ -55,28 +55,35 @@ class Train(object):
                         feed_dict=self.graph.feed_dict(x, y_, True))
         dump(Path(params.outp_dir)/"RAZ.txt",
              {
-                 "R": R,
-                 "A": A,
-                 "Z": Z,
-                 "logZ": logZ,
-                 "global_steps": g
+                 "R": float(R),
+                 "A": float(A),
+                 "Z": float(Z),
+                 "logZ": float(logZ),
+                 "global_steps": int(g)
              })
         return R,g, sum
 
     def sample(self, test=False):
         if not test:
-            xs, ys = model.sampling(
-                self.x_tr, self.y_tr, params.batch_size)
-            nxs = model.add_noise(xs ) if params.add_noise else xs
+            xs, ys = model.sampling(self.x_tr, self.y_tr, params.batch_size)
+            nxs = model.add_noise(xs) if params.add_noise else xs
         else:
             xs, ys = self.x_te, self.y_te
             nxs = model.add_noise(xs, zeros=True) if params.add_noise else xs
         return nxs, ys
 
-if __name__ == "__main__":
-    from loader import load
+from loader import load
+def main():
     t = Train(*load())
     t.train()
+
+if __name__ == "__main__":
+    if params.multisets:
+        for s in params.multisets:
+            params.apply_set(s)
+            main()
+    else:
+        main()
 
 
 

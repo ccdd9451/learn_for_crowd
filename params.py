@@ -16,6 +16,8 @@ class Param(dict):
             self.update(load(cwdir)["feed_dict"])
             self.update(sets_contents[
                 load(cwdir)["default_set"]])
+    def apply_set(self, setnum):
+        self.update(sets_contents[setnum])
 
 def load(path):
     with open(path, "r") as f:
@@ -38,7 +40,9 @@ if __name__ == "__main__":
         "noise_amp": 1,
         "learning_rate": 0.001,
         "batch_size": 2000,
+        "multisets": []
     }
+
     dump("feed_dict", {"feed_dict":default_dict, "default_set": 0})
 
 sets_contents = [ {
