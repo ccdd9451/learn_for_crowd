@@ -2,9 +2,11 @@
 # encoding: utf-8
 
 import model
+import numpy as np
 import tensorflow as tf
 
 from graph import Graph
+from loader import decoder
 from params import params
 from params import dump
 from path import Path
@@ -23,26 +25,36 @@ class Train(object):
             pardim += 1
         tardim = y_.shape[1]
         self.graph = Graph(pardim, tardim)
+        self.sess_init()
+
+    def __del__(self):
+        if self.sess:
+            self.sess.close()
 
     def train(self, steps = params.train_steps):
         outpd = Path(params.outp_dir)
-        with tf.Session() as sess:
-            init = tf.global_variables_initializer()
-            sess.run(init)
-            saver = tf.train.Saver()
-            writer = tf.summary.FileWriter(
-                outpd, sess.graph)
-            ckpt = tf.train.get_checkpoint_state(outpd)
-            if ckpt:
-                saver.restore(sess, ckpt.model_checkpoint_path)
-            for step in range(steps):
-                self._trainer(sess)
-                if step % 100 == 0:
-                    R, g, s= self._analysiser(sess)
-                    print("Steps", g,": RMSE", R)
-                    saver.save(sess, outpd/"model",
-                               global_step=g)
-                    writer.add_summary(s, g)
+        sess = self.sess
+        for step in range(steps):
+            self._trainer(sess)
+            if step % 100 == 0:
+                R, g, s= self._analysiser(sess)
+                print("Steps", g,": RMSE", R)
+                self.saver.save(sess, outpd/"model",
+                           global_step=g)
+                self.writer.add_summary(s, g)
+
+    def sess_init(self):
+        outpd = Path(params.outp_dir)
+        self.sess = tf.Session()
+        init = tf.global_variables_initializer()
+        self.sess.run(init)
+        self.saver = tf.train.Saver()
+        self.writer = tf.summary.FileWriter(
+            outpd, self.sess.graph)
+        ckpt = tf.train.get_checkpoint_state(outpd)
+        if ckpt:
+            self.saver.restore(self.sess, ckpt.model_checkpoint_path)
+
 
     def _trainer(self, sess):
         x, y_ = self.sample(test=False)
@@ -71,6 +83,13 @@ class Train(object):
             xs, ys = self.x_te, self.y_te
             nxs = model.add_noise(xs, zeros=True) if params.add_noise else xs
         return nxs, ys
+
+
+    def predict(self, xargs):
+        if (xargs > 1).any() or (xargs < -1).any():
+            return np.nan
+        decoded = decoder(xargs)
+        return float(self.sess.run(self.graph.y, feed_dict=self.graph.feed_dict(decoded, np.ones((1,1)), True)))
 
 from loader import load
 def main():
