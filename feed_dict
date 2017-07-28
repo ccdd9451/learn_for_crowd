@@ -10,4 +10,4 @@ feed_dict:
   noise_amp: 1
   test_partial: 0.8
   train_steps: 20000
-  weight_stddev: 1
+  weight_stddev: 0.04
