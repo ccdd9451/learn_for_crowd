@@ -30,7 +30,7 @@ def dump(path, content):
 if __name__ == "__main__":
     default_dict = {
         "bias_constant": 0.1,
-        "weight_stddev": 1,
+        "weight_stddev": 0.04,
         "keep_prob": 0.8,
         "node_list": [50, "d"],
         "train_steps": 20000,
