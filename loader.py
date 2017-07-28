@@ -17,7 +17,9 @@ def load():
                      col_name.endswith("th_obstacle") or
                      col_name.endswith("th_region") or
                      col_name.endswith("th_ai") ]
-    x = datas[col_names].as_matrix()
+    x_pre = datas[col_names]
+    x_pre_col = x_pre.columns[(x_pre - x_pre.mean() > 0.01).any()]
+    x = x_pre[x_pre_col].as_matrix()
     y_ = datas[params.out_cols].as_matrix()
     return x, y_
 
