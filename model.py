@@ -9,7 +9,10 @@ from params import params
 
 def nn_layer(input_tensor, output_dim, act=tf.nn.relu):
     nn_layer.counter = getattr(nn_layer, 'counter', 0) + 1
-    input_dim = int(input_tensor.get_shape()[1])
+    try:
+        input_dim = int(input_tensor.get_shape()[1])
+    except:
+        input_dim = int(input_tensor.output_shapes[1])
 
     with tf.name_scope("layer"+str(nn_layer.counter)):
         weights = weight_variable([input_dim, output_dim])
@@ -39,7 +42,7 @@ def variable_summaries(var):
 def dropout(hidden1):
     dropout.counter = getattr(dropout, 'counter', 0) + 1
     with tf.name_scope('dropout'):
-        keep_prob = tf.placeholder(tf.float32)
+        keep_prob = tf.placeholder(tf.float64)
         tf.summary.scalar('dropout_keep_probability', keep_prob)
         return tf.nn.dropout(hidden1, keep_prob), keep_prob
 

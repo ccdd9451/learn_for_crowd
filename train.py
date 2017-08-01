@@ -25,7 +25,6 @@ class Train(object):
             pardim += 1
         tardim = y_.shape[1]
         self.graph = Graph(pardim, tardim)
-        self.sess_init()
 
     def __del__(self):
         if self.sess:

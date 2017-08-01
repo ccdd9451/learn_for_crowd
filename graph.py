@@ -14,15 +14,18 @@ class Graph(object):
         self.nodes = []
         self.p_dict = {}
         all_nodes = [pardim] + params.node_list + [tardim]
-        self._create_graph(all_nodes)
 
-    def _create_graph(self, nodelist):
-        pardim = nodelist[0]
         self.x = tf.placeholder(tf.float32,
                                [None, pardim],
                                name="x")
-        self.nodes.append(self.x)
+        self.ref_y = tf.placeholder(tf.float32,
+                                   [None, tardim],
+                                   name="y")
+        self.nodelist = all_nodes
 
+    def create_graph(self):
+        self.nodes.append(self.x)
+        nodelist = self.nodelist
         for node in nodelist[1:-1]:
             if type(node) is int:
                 new = model.nn_layer(self.nodes[-1],
@@ -37,10 +40,6 @@ class Graph(object):
         self.nodes.append(new)
 
         self.y = self.nodes[-1]
-        tardim = self.nodes[-1].get_shape()[1]
-        self.ref_y = tf.placeholder(tf.float32,
-                                   [None, tardim],
-                                   name="y")
 
         self.R, self.sum, _ = model.analysis(self.y, self.ref_y)
         self.analysis = tf.summary.merge_all()
